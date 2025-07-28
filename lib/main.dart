@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:untitled/Services/IsFirstLaunch.dart';
 import 'package:untitled/screens/Onboard.dart';
+import 'package:untitled/screens/Welcome.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
 }
 
@@ -29,9 +31,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  late Future<bool> _firstLaunch;
+
+  void initState() {
+    setState(() {
+      _firstLaunch = isFirstLaunch();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -47,7 +57,23 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      body: Onboard(),
+      body: FutureBuilder(
+          future: _firstLaunch,
+          builder: (context, snapshot) {
+            switch(snapshot.connectionState) {
+              case ConnectionState.done:
+                if(snapshot.data == true) {
+                  return Onboard();
+                } else {
+                  return Welcome();
+                }
+              case ConnectionState.waiting:
+                return CircularProgressIndicator();
+              default:
+                return Text("Failed Processing");
+            }
+          }
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:untitled/screens/Welcome.dart';
 import 'package:untitled/widgets/onBoardScreens/CustomBanner.dart';
 
 class Onboard extends StatefulWidget {
@@ -42,46 +43,57 @@ class _OnboardState extends State<Onboard> {
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          CustomBanner(
-              image: banners[current_slide]!["image"] ?? "null",
-              heading: banners[current_slide]!["heading"] ?? "null",
-              text: banners[current_slide]!["text"] ?? "null"
-          ),
 
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              SizedBox(
-                width: 60,
-                height: 60,
-                child: CircularProgressIndicator(
-                  value: progress,
-                  backgroundColor: Color(0xFFB9E5D1),
-                  color: Color(0xFF08B783),
+            CustomBanner(
+                image: banners[current_slide]!["image"] ?? "null",
+                heading: banners![current_slide]!["heading"] ?? "null",
+                text: banners[current_slide]!["text"] ?? "null"
+            ),
+
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: 100
+            ),
+            child:  Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  width: 60,
+                  height: 60,
+                  child: CircularProgressIndicator(
+                    value: progress,
+                    backgroundColor: Color(0xFFB9E5D1),
+                    color: Color(0xFF08B783),
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 50,
-                height: 50,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        backgroundColor: Color(0xFF08B783)
-                    ),
-                    onPressed: () => {
-                      setState(() {
-                        if(current_slide < total) {
-                          current_slide++;
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          backgroundColor: Color(0xFF08B783)
+                      ),
+                      onPressed: () => {
+                        if(current_slide < total - 1) {
+                          setState(() {
+                            current_slide++;
+                          })
+                        } else {
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (context) => Scaffold(
+                              body: Welcome(),
+                            )), (Route<dynamic> route) => false)
                         }
-                      })
-                    },
-                    child: progress < 1 ? Icon(Icons.arrow_forward) : Text("Go")
-                ),
-              )
-            ],
-          ),
+                      },
+                      child: progress < 1 ? Icon(Icons.arrow_forward) : Text("Go")
+                  ),
+                )
+              ],
+            ),
+          )
         ],
       ),
     );
